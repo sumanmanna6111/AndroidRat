@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
+
+<!--
+<network-security-config>
+<domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">secure.example.com</domain>
+    ...
+</domain-config>
+</network-security-config>
+    https://developer.android.com/topic/security/best-practices-->
