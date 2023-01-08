@@ -12,7 +12,7 @@ import com.example.smartdialer.room.entity.LocationEntity;
 import com.example.smartdialer.room.entity.Noti;
 import com.example.smartdialer.room.entity.Sms;
 
-@Database(entities = {Calls.class, Noti.class, Sms.class, LocationEntity.class}, version = 1)
+@Database(entities = {Calls.class, Noti.class, Sms.class, LocationEntity.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract CallDao callDao();
     public abstract SmsDao smsDao();

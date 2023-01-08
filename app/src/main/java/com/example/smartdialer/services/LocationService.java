@@ -47,7 +47,6 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("TAG", "onCreate: ");
         context = this;
         locationCallback = new LocationCallback() {
             @Override
@@ -83,8 +82,7 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("TAG", "onStartCommand: " );
-        String status = intent.getStringExtra("stop");
+        //String status = intent.getStringExtra("stop");
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Weather")
                 .setContentText("")
@@ -94,10 +92,10 @@ public class LocationService extends Service {
 
         startForeground(2, notification);
         context = this;
-        if (status != null && status.equals("yes")){
+       /* if (status != null && status.equals("yes")){
             //stopSelf();
             LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
-        }
+        }*/
         return START_STICKY;
     }
 }

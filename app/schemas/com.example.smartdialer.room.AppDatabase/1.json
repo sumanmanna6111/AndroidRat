@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bb915b267a3625a652161821583404a7",
+    "identityHash": "7a9a6a2a92c873910c553f8098cf0426",
     "entities": [
       {
         "tableName": "calls",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `appName` TEXT, `title` TEXT, `content` TEXT, `postTime` INTEGER NOT NULL, `key` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `appName` TEXT, `title` TEXT, `content` TEXT, `postTime` TEXT, `key` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -73,8 +73,8 @@
           {
             "fieldPath": "postTime",
             "columnName": "postTime",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "key",
@@ -172,7 +172,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bb915b267a3625a652161821583404a7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a9a6a2a92c873910c553f8098cf0426')"
     ]
   }
 }

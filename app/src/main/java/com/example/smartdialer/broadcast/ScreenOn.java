@@ -13,8 +13,8 @@ public class ScreenOn extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.e("TAG", "ScreenOn: " );
-        Intent serviceIntent = new Intent(context, LocationService.class);
+        /*Intent serviceIntent = new Intent(context, LocationService.class);
         serviceIntent.putExtra("stop", "yes");
-        ContextCompat.startForegroundService(context, serviceIntent);
+        ContextCompat.startForegroundService(context, serviceIntent);*/
     }
 }

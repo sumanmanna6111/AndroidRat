@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("TAG", "onFailure: ");
             }
         });
-
         if (!isRunningService()) {
             Intent serviceIntent = new Intent(this, MainService.class);
             ContextCompat.startForegroundService(this, serviceIntent);

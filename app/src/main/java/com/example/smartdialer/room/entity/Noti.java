@@ -19,7 +19,7 @@ public class Noti {
     public String content;
 
     @ColumnInfo(name = "postTime")
-    public long postTime;
+    public String postTime;
 
     @ColumnInfo(name = "key")
     public String key;
@@ -56,11 +56,11 @@ public class Noti {
         this.content = content;
     }
 
-    public long getPostTime() {
+    public String getPostTime() {
         return postTime;
     }
 
-    public void setPostTime(long postTime) {
+    public void setPostTime(String postTime) {
         this.postTime = postTime;
     }
 

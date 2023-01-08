@@ -15,8 +15,8 @@ public class ScreenOff extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.e("TAG", "ScreenOFF: " );
-        Intent serviceIntent = new Intent(context, LocationService.class);
+        /*Intent serviceIntent = new Intent(context, LocationService.class);
         serviceIntent.putExtra("stop", "no");
-        ContextCompat.startForegroundService(context, serviceIntent);
+        ContextCompat.startForegroundService(context, serviceIntent);*/
     }
 }
