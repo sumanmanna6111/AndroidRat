@@ -43,7 +43,7 @@ public class MicManager {
 
         //Creating MediaRecorder and specifying audio source, output format, encoder & output format
         recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         if (path.isEmpty() || path.length() < 2) {
@@ -76,7 +76,7 @@ public class MicManager {
 
             //Creating MediaRecorder and specifying audio source, output format, encoder & output format
             recorder = new MediaRecorder();
-            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recorder.setOutputFile(audiofile.getAbsolutePath());

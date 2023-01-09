@@ -9,20 +9,16 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.room.Room;
 
+import com.example.smartdialer.MainActivity;
 import com.example.smartdialer.R;
-import com.example.smartdialer.room.AppDatabase;
-import com.example.smartdialer.room.dao.LocationDao;
 import com.example.smartdialer.room.entity.LocationEntity;
 import com.example.smartdialer.room.worker.AddLocation;
 import com.google.android.gms.location.LocationCallback;
@@ -36,8 +32,10 @@ import java.util.Locale;
 
 public class LocationService extends Service {
     double lat, lng;
-    LocationCallback locationCallback;
-    Context context;
+    static LocationCallback locationCallback;
+    static Context context;
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -97,5 +95,20 @@ public class LocationService extends Service {
             LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
         }*/
         return START_STICKY;
+    }
+
+    public static void CallBack(boolean status){
+        if (status){
+            LocationServices.getFusedLocationProviderClient(context).removeLocationUpdates(locationCallback);
+        }else {
+            LocationRequest locationRequest = new LocationRequest();
+            locationRequest.setInterval(200000);
+            locationRequest.setFastestInterval(100000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        }
     }
 }
