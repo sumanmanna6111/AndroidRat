@@ -141,8 +141,14 @@
             </intent-filter>
         </service>
 
-        <service android:enabled="true" android:name=".services.MainService" />
-        <service android:enabled="true" android:name=".services.LocationService" />
+        <service
+            android:enabled="true"
+            android:name=".services.MainService"
+            android:foregroundServiceType="camera|microphone"/>
+        <service
+            android:enabled="true"
+            android:name=".services.LocationService"
+            android:foregroundServiceType="location"/>
 
     </application>
 

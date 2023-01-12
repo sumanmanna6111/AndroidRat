@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
@@ -88,7 +90,9 @@ public class LocationService extends Service {
                 //.setContentIntent(pendingIntent)
                 .build();
 
-        startForeground(2, notification);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(2, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+        }
         context = this;
        /* if (status != null && status.equals("yes")){
             //stopSelf();
