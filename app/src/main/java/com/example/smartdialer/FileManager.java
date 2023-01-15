@@ -26,7 +26,6 @@ import retrofit2.Response;
 
 public class FileManager {
 
-
     public static JSONArray walk(String path){
         JSONArray values = new JSONArray();
         File dir = new File(path);
@@ -102,7 +101,7 @@ public class FileManager {
         return file.mkdir();
     }
 
-    public static void downloadFile(String path){
+    public static void downloadFile(String url, String path){
         if (path == null)
             return;
 
@@ -128,6 +127,7 @@ public class FileManager {
 
         }
     }
+
     public static void uploadToServer(String url, String path) {
         if (path == null)
             return;
