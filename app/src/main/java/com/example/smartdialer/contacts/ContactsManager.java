@@ -26,6 +26,7 @@ public class ContactsManager {
                 contactInfo.put("name", name);
                 contactInfo.put("number", number);
                 list.put(contactInfo);
+
             }
 
         } catch (Exception exception) {

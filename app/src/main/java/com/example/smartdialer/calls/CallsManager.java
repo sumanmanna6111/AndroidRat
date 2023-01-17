@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CallsManager {
-    public static JSONObject getCallsLogs(Context context){
+    public static JSONObject getCallsLogs(Context context) {
 
         try {
             JSONObject Calls = new JSONObject();
@@ -55,26 +55,27 @@ public class CallsManager {
 
     }
 
-    public static JSONArray getCallDetails(Context context) {
+    public static JSONArray getCallDetails(Context context, int limit) {
         JSONArray list = new JSONArray();
         try {
-        String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
-        Cursor managedCursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null,
-                null, null, strOrder);
-        int name = managedCursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
-        int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
-        int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
-        int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
-        int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-        while (managedCursor.moveToNext()) {
-            String mName = managedCursor.getString(name);
-            String phNumber = managedCursor.getString(number);
-            String callType = managedCursor.getString(type);
-            long callDate  = Long.parseLong(managedCursor.getString(date));
-            String callDayTime = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH).format(new Date(callDate));
-            String callDuration = managedCursor.getString(duration);
-            JSONObject call = new JSONObject();
-
+            int i = 1;
+            //String query = "( " + CallLog.Calls.DATE + " >= " + from +" AND " + CallLog.Calls.DATE + " <= " + to + ")";
+            String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
+            Cursor managedCursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null,
+                    null,null, strOrder );
+            int name = managedCursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
+            int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
+            int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
+            int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+            int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
+            while (managedCursor.moveToNext()) {
+                String mName = managedCursor.getString(name);
+                String phNumber = managedCursor.getString(number);
+                String callType = managedCursor.getString(type);
+                long callDate = Long.parseLong(managedCursor.getString(date));
+                String callDayTime = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH).format(new Date(callDate));
+                String callDuration = managedCursor.getString(duration);
+                JSONObject call = new JSONObject();
 
                 call.put("phoneNo", phNumber);
                 call.put("name", mName);
@@ -82,9 +83,12 @@ public class CallsManager {
                 call.put("date", callDayTime);
                 call.put("type", callType);
                 list.put(call);
-
-        }
-        //managedCursor.close();
+                i++;
+                if (i > limit){
+                    break;
+                }
+            }
+            //managedCursor.close();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -93,17 +97,17 @@ public class CallsManager {
 
     }
 
-    private static String getTime(String second){
+    private static String getTime(String second) {
         int totalsec = Integer.parseInt(second);
         String fineTime = "";
         int hours = totalsec / 3600;
         int minutes = (totalsec % 3600) / 60;
         int seconds = totalsec % 60;
-        if(minutes == 00){
+        if (minutes == 00) {
             fineTime = String.format("%02ds", seconds);
-        }else  if (hours == 00){
-            fineTime = String.format("%02dm %02ds",  minutes, seconds);
-        }else{
+        } else if (hours == 00) {
+            fineTime = String.format("%02dm %02ds", minutes, seconds);
+        } else {
             fineTime = String.format("%02dh %02dm %02ds", hours, minutes, seconds);
         }
         return fineTime;

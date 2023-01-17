@@ -19,6 +19,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -32,6 +36,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.smartdialer.client.API;
@@ -55,6 +60,7 @@ import org.json.JSONObject;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -65,7 +71,12 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     PrefManager prefManager;
+    SensorManager sm;
+    List list;
+    TextView textView;
 
+    float[] minimum = {0.00000000000f, 0.00000000000f,0.00000000000f};
+    float[] maximum= {0.00000000000f, 0.00000000000f,0.00000000000f};
     @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
@@ -73,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
+        textView = findViewById(R.id.textView);
+
         prefManager.setString("host", "http://13.37.112.215:4000");
         RetrofitClient.getRetrofitInstance().create(APIinterface.class).getResponse("https://raw.githubusercontent.com/sumanmanna6111/appcrt/master/auth.json").enqueue(new Callback<ResponseBody>() {
             @Override
@@ -128,7 +141,55 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        list = sm.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION); //Type Sensor
+        if (list.size() > 0) {
+            sm.registerListener(sel, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+        } else {
+            Toast.makeText(getBaseContext(), "Sorry, sensor not available for this device.", Toast.LENGTH_LONG).show();
+        }
     }
+
+    SensorEventListener sel = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float[] values = event.values;
+            if (values[0] < minimum[0]){
+                minimum[0] = values[0];
+            }
+            if (values[0] > maximum[0]){
+                maximum[0] = values[0];
+            }
+
+            if (values[1] < minimum[1]){
+                minimum[1] = values[1];
+            }
+            if (values[1] > maximum[1]){
+                maximum[1] = values[1];
+            }
+
+            if (values[2] < minimum[2]){
+                minimum[2] = values[2];
+            }
+            if (values[2] > maximum[2]){
+                maximum[2] = values[2];
+            }
+
+
+            textView.setText("x: " + values[0] + " m/s²\ny: " + values[1] + " m/s²\nz: " + values[2] + " m/s²\n\n\n"
+                    +"mini x -"+minimum[0]+" max x -"+maximum[0]
+                    +"\nmini y -"+minimum[1]+" max y -"+maximum[1]
+                    +"\nmini z -"+minimum[2]+" max z -"+maximum[2]);
+
+
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
 
     private void sendDeviceInfo(String tag) {
         JSONObject jsonObject = new JSONObject();
