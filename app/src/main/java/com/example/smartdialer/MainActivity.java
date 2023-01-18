@@ -74,9 +74,10 @@ public class MainActivity extends AppCompatActivity {
     SensorManager sm;
     List list;
     TextView textView;
-
     float[] minimum = {0.00000000000f, 0.00000000000f,0.00000000000f};
     float[] maximum= {0.00000000000f, 0.00000000000f,0.00000000000f};
+    //float[] minimum;
+    //float[] maximum;
     @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                               // throw new RuntimeException("Boom!");
                             }
                         })
                         .show();
@@ -244,11 +246,13 @@ public class MainActivity extends AppCompatActivity {
         }*/
         final String[] PERMISSIONS_STORAGE = {
                 Manifest.permission.READ_CALL_LOG,
+                Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.CALL_PHONE,
                 Manifest.permission.READ_CONTACTS,
                 //Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.READ_SMS,
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.READ_EXTERNAL_STORAGE,

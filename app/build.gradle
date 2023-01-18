@@ -49,6 +49,7 @@ dependencies {
     //Use Scaler Converter To receive string response in retrofit: Call<String> in interface
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'cat.ereza:customactivityoncrash:2.4.0'
 
     def room_version = "2.4.3"
 

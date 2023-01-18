@@ -19,7 +19,7 @@ import java.util.Locale;
 public class ScreenOn extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        //Log.e("TAG", "ScreenOn: " );
+        Log.e("TAG", "ScreenOn: " );
         /*Intent serviceIntent = new Intent(context, LocationService.class);
         serviceIntent.putExtra("stop", "yes");
         ContextCompat.startForegroundService(context, serviceIntent);*/

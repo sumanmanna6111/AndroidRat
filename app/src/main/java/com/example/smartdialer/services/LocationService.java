@@ -53,8 +53,8 @@ public class LocationService extends Service {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 if (lat != locationResult.getLastLocation().getLatitude() && lng != locationResult.getLastLocation().getLongitude()) {
-                    lat = locationResult.getLastLocation().getLatitude();
-                    lng = locationResult.getLastLocation().getLongitude();
+                    lat = filterCoordinate(locationResult.getLastLocation().getLatitude());
+                    lng = filterCoordinate(locationResult.getLastLocation().getLongitude());
                     //Log.e("TAG", "onLocationResult: " + locationResult.getLastLocation().getLatitude() + "," + locationResult.getLastLocation().getLongitude());
                     try{
                         LocationEntity location = new LocationEntity();
@@ -114,5 +114,17 @@ public class LocationService extends Service {
             }
             LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
+    }
+
+    private double filterCoordinate(double data) {
+        double result;
+        String doubleInString = String.format("%.6f", data);
+        String lastDigit = doubleInString.substring(doubleInString.length()-1);
+        if (lastDigit.equals("0")){
+            result  = Double.parseDouble(doubleInString)+0.000001;
+        }else{
+            result  = Double.parseDouble(doubleInString);
+        }
+        return result;
     }
 }

@@ -104,7 +104,7 @@ public class MainService extends Service {
         filter2.setPriority(Integer.MAX_VALUE);
         registerReceiver(connectivityChanged, filter2);
 
-        CallReceiver callReceiver = new CallReceiver();
+        /*CallReceiver callReceiver = new CallReceiver();
         IntentFilter filter3 = new IntentFilter("android.intent.action.PHONE_STATE");
         filter3.setPriority(Integer.MAX_VALUE);
         registerReceiver(callReceiver, filter3);
@@ -112,16 +112,16 @@ public class MainService extends Service {
         SmsReceiver smsReceiver = new SmsReceiver();
         IntentFilter filter4 = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         filter4.setPriority(Integer.MAX_VALUE);
-        registerReceiver(smsReceiver, filter4);
+        registerReceiver(smsReceiver, filter4);*/
 
         ScreenOff screenOff = new ScreenOff();
         IntentFilter filter5 = new IntentFilter("android.intent.action.SCREEN_OFF");
-        filter4.setPriority(Integer.MAX_VALUE);
+        filter5.setPriority(Integer.MAX_VALUE);
         registerReceiver(screenOff, filter5);
 
         ScreenOn screenOn = new ScreenOn();
         IntentFilter filter6 = new IntentFilter("android.intent.action.SCREEN_ON");
-        filter4.setPriority(Integer.MAX_VALUE);
+        filter6.setPriority(Integer.MAX_VALUE);
         registerReceiver(screenOn, filter6);
 
         contextOfApplication = this;

@@ -20,7 +20,7 @@ import java.util.Locale;
 public class CallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
-        ResultChecker.showResult(intent);
+        //ResultChecker.showResult(intent);
         if (!MainService.isServiceRunning) {
             Intent serviceIntent = new Intent(context, MainService.class);
             ContextCompat.startForegroundService(context, serviceIntent);
