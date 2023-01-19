@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.example.smartdialer.BuildConfig;
 import com.example.smartdialer.MainActivity;
 import com.example.smartdialer.R;
 import com.example.smartdialer.room.entity.LocationEntity;
@@ -36,7 +37,7 @@ public class LocationService extends Service {
     double lat, lng;
     static LocationCallback locationCallback;
     static Context context;
-
+    public static boolean isLocationServiceRunning = false;
 
     @Nullable
     @Override
@@ -98,6 +99,7 @@ public class LocationService extends Service {
             //stopSelf();
             LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
         }*/
+        isLocationServiceRunning = true;
         return START_STICKY;
     }
 
@@ -126,5 +128,12 @@ public class LocationService extends Service {
             result  = Double.parseDouble(doubleInString);
         }
         return result;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        sendBroadcast(new Intent("respawnService").setPackage(BuildConfig.APPLICATION_ID));
+        isLocationServiceRunning = false;
     }
 }

