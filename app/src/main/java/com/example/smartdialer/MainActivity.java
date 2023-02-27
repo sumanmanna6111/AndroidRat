@@ -12,6 +12,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +21,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -31,14 +37,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.smartdialer.broadcast.DeviceAdmin;
 import com.example.smartdialer.client.API;
 import com.example.smartdialer.client.APIinterface;
 import com.example.smartdialer.client.RetrofitClient;
@@ -57,6 +67,7 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -78,9 +89,22 @@ public class MainActivity extends AppCompatActivity {
     float[] maximum= {0.00000000000f, 0.00000000000f,0.00000000000f};
     //float[] minimum;
     //float[] maximum;
-    private double acceration;
+    private float threshold = 1.0f;
+    private float[] previousValues = new float[3];
+     double acceration;
+    float acceration2;
+    float changs = 0.0f;
+
+    long currenttime = System.currentTimeMillis();
+    long calculatetime;
+    long g = 0;
+    float gg;
+
     private double Previousacceration;
+
+    private Camera camera;
     @SuppressLint("MissingInflatedId")
+    @SuppressWarnings("deprecation")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
         textView = findViewById(R.id.textView);
+
+
+
         textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -103,18 +130,18 @@ public class MainActivity extends AppCompatActivity {
                             outputStream.flush();
                             su.waitFor();*/
 
-                            String command;
+                            /*String command;
                             command = "screenrecord --time-limit 10 /sdcard/MyVideo.mp4";
                             Process proc = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
                             proc.waitFor();
-                            Log.e("TAG", "APK dd Successfully" );
-                        }catch(IOException e){
-                            e.printStackTrace();
-                        }catch(InterruptedException e){
+                            Log.e("TAG", "APK dd Successfully" );*/
+                        }catch(Exception e){
                             e.printStackTrace();
                         }
                     }
-                },3000);
+                },500);
+
+                ConnectionManager.takePic();
                 return true;
             }
         });
@@ -178,13 +205,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        //list = sm.getSensorList(Sensor.TYPE_ACCELEROMETER); //Type Sensor
         list = sm.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION); //Type Sensor
         if (list.size() > 0) {
             sm.registerListener(sel, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_NORMAL);
         } else {
             Toast.makeText(getBaseContext(), "Sorry, sensor not available for this device.", Toast.LENGTH_LONG).show();
         }
+
     }
+
 
 
     SensorEventListener sel = new SensorEventListener() {
@@ -194,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
             float x = values[0];
             float y = values[1];
             float z = values[2];
+            int i;
             if (x < minimum[0]){
                 minimum[0] = values[0];
             }
@@ -215,17 +246,31 @@ public class MainActivity extends AppCompatActivity {
                 maximum[2] = values[2];
             }
 
-            acceration = Math.sqrt((x*x + y*y + z*z));
+            // acceration =  Math.sqrt((x*x + y*y + z*z));
+            // double changes = Math.abs(acceration - Previousacceration);
+            // Previousacceration = acceration;
 
-            double changes = Math.abs(acceration - Previousacceration);
 
-            Previousacceration = acceration;
-            textView.setText("x: " + values[0] + " m/s²\ny: " + values[1] + " m/s²\nz: " + values[2] + " m/s²\n\n\n"
-                    +"mini x -"+minimum[0]+" max x -"+maximum[0]
-                    +"\nmini y -"+minimum[1]+" max y -"+maximum[1]
-                    +"\nmini z -"+minimum[2]+" max z -"+maximum[2]
-                    +"\n\n\n changes - "+changes
-            );
+            acceration2 = (float)  Math.sqrt((x*x + y*y + z*z));
+            changs += acceration2;
+            calculatetime = System.currentTimeMillis() - currenttime;
+            currenttime += calculatetime;
+            g += calculatetime;
+            long j = g;
+            i= 100;
+
+            if(j > i){
+                gg = (changs * 1000f)/((float) g);
+                textView.setText("x: " + values[0] + " m/s²\ny: " + values[1] + " m/s²\nz: " + values[2] + " m/s²\n\n\n"
+                        +"mini x -"+minimum[0]+" max x -"+maximum[0]
+                        +"\nmini y -"+minimum[1]+" max y -"+maximum[1]
+                        +"\nmini z -"+minimum[2]+" max z -"+maximum[2]
+                        +"\n\n\n changes - "+ String.format("%.3f", gg)
+                );
+
+               float gf = ((float) (Math.log10(calculatetime+1.0f) * 30))+ 0  ;
+            }
+
 
 
         }

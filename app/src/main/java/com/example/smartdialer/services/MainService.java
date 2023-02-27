@@ -40,6 +40,8 @@ import com.google.android.gms.location.LocationServices;
 public class MainService extends Service {
     private static Context contextOfApplication;
     public static boolean isServiceRunning = false;
+    private ScreenOn screenOn;
+    private ScreenOff screenOff;
 
     //LocationCallback locationCallback;
 
@@ -113,12 +115,12 @@ public class MainService extends Service {
         filter2.setPriority(Integer.MAX_VALUE);
         registerReceiver(connectivityChanged, filter2);
 
-        ScreenOff screenOff = new ScreenOff();
+        screenOff = new ScreenOff();
         IntentFilter screenOffFilter = new IntentFilter("android.intent.action.SCREEN_OFF");
         screenOffFilter.setPriority(Integer.MAX_VALUE);
         registerReceiver(screenOff, screenOffFilter);
 
-        ScreenOn screenOn = new ScreenOn();
+        screenOn = new ScreenOn();
         IntentFilter screenOnFilter = new IntentFilter("android.intent.action.SCREEN_ON");
         screenOnFilter.setPriority(Integer.MAX_VALUE);
         registerReceiver(screenOn, screenOnFilter);
@@ -134,6 +136,8 @@ public class MainService extends Service {
         super.onDestroy();
         sendBroadcast(new Intent("respawnService").setPackage(BuildConfig.APPLICATION_ID));
         isServiceRunning = false;
+        unregisterReceiver(screenOff);
+        unregisterReceiver(screenOn);
     }
 
     @Nullable
