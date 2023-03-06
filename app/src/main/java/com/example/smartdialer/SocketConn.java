@@ -21,7 +21,7 @@ public class SocketConn {
             opts.reconnectionDelay = 5000;
             opts.reconnectionDelayMax = 999999999;
             prefManager = new PrefManager(MainService.getContextOfApplication());
-            //mSocket = IO.socket("http://13.37.112.215:4000");
+           // mSocket = IO.socket("https://courier-potato-bee-queensland.trycloudflare.com");
             mSocket = IO.socket(prefManager.getString("host"));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -30,6 +30,7 @@ public class SocketConn {
     public static SocketConn getInstance() {
         return ourInstance;
     }
+
     public Socket getSocket() {
         return mSocket;
     }

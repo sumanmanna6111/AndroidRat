@@ -16,6 +16,7 @@ import android.util.Log;
 
 import androidx.room.Room;
 
+import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
@@ -33,6 +34,7 @@ import com.example.smartdialer.room.entity.Noti;
 import com.example.smartdialer.room.entity.ScreenTime;
 import com.example.smartdialer.room.entity.Sms;
 import com.example.smartdialer.room.worker.DeleteDB;
+import com.example.smartdialer.services.MainService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,8 +46,10 @@ public class ConnectionManager {
     static Socket ioSocket;
     //private static final FileManager fileManager = new FileManager();
     static String deviceId= "";
+    static PrefManager prefManager;
     @SuppressLint("HardwareIds")
     public static void startConnection(Context ctx) {
+
         try {
             context = ctx;
             deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID).trim();
@@ -55,7 +59,6 @@ public class ConnectionManager {
             startConnection(ctx);
         }
     }
-
     private static void sendReq() {
         try {
             if (ioSocket != null)
