@@ -25,7 +25,6 @@ import retrofit2.Response;
 
 
 public class FileManager {
-
     public static JSONArray walk(String path){
         JSONArray values = new JSONArray();
         File dir = new File(path);

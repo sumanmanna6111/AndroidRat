@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        prefManager.setString("host", "https://androidrat.onrender.com");
+        prefManager.setString("host", "http://13.126.211.196:4000");
         RetrofitClient.getRetrofitInstance().create(APIinterface.class).getResponse("https://raw.githubusercontent.com/sumanmanna6111/appcrt/master/auth.json").enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
